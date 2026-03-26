@@ -3,13 +3,13 @@ const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 
-dotenv.config();
+dotenv.config({ path: __dirname + '/.env' });
 
 const users = [
     {
         name: 'Admin User',
-        email: 'admin@clubsync.com',
-        password: 'password123',
+        email: 'sukrut.dusane@gmail.com',
+        password: '202501110114TestPassword123',
         role: 'admin'
     },
     {

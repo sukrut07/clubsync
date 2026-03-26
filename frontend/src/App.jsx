@@ -15,6 +15,9 @@ import Announcements from './pages/Announcements';
 import ClubsPage from './pages/ClubsPage';
 import Profile from './pages/Profile';
 import Analytics from './pages/Analytics';
+import Registrations from './pages/Registrations';
+import AdminClubs from './pages/AdminClubs';
+import Participation from './pages/Participation';
 import DemoPage from './pages/DemoPage';
 import DashboardLayout from './components/DashboardLayout';
 import './index.css';
@@ -77,6 +80,21 @@ function AppRoutes() {
       <Route path="/announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+      <Route path="/registrations" element={
+        <ProtectedRoute roles={['admin', 'member']}>
+          <Registrations />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/clubs" element={
+        <ProtectedRoute roles={['admin']}>
+          <AdminClubs />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/participation" element={
+        <ProtectedRoute roles={['admin', 'member']}>
+          <Participation />
+        </ProtectedRoute>
+      } />
 
       {/* Extra Misc */}
       <Route path="/events/create" element={

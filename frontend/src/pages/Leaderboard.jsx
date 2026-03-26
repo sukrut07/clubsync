@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Trophy, Zap, Users, ArrowUp, Star, Medal, ChevronRight } from 'lucide-react';
+import { Trophy, Zap, ArrowUp, Star, Medal, ChevronRight } from 'lucide-react';
 import { participationAPI } from '../services/api';
+import InteractiveLeaderboard from '../components/InteractiveLeaderboard';
 
 const PodiumRank = ({ rank, name, points, dept, color, shadow, delay }) => (
     <div className={`glass-card p-10 flex flex-col items-center text-center relative overflow-hidden group border-white/5 animate-fade-in ${rank === 1 ? 'lg:scale-110 lg:-translate-y-6 z-10 border-indigo-500/20' : ''}`} style={{ animationDelay: `${delay}ms` }}>
@@ -101,46 +102,21 @@ const Leaderboard = () => {
                 )}
             </div>
 
-            {/* Remaining List */}
-            <div className="max-w-4xl mx-auto glass-card overflow-hidden border-white/5 mt-10">
-                <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                    <h3 className="text-sm font-bold text-white uppercase tracking-[0.15em] flex items-center gap-3">
-                        <ArrowUp size={16} className="text-indigo-400" /> Professional Division
-                    </h3>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Players: {data.length}</div>
-                </div>
-                <div className="divide-y divide-white/5">
-                    {others.map((player, i) => (
-                        <div key={i} className="flex items-center justify-between p-6 hover:bg-white/5 transition-all group">
-                            <div className="flex items-center gap-6">
-                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 font-bold text-xs border border-white/5">
-                                    #{i + 4}
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 flex items-center justify-center text-indigo-400 font-bold shadow-inner">
-                                        {player.name.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <div className="text-base font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors">{player.name}</div>
-                                        <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-0.5">{player.department || 'Elite Student'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-8">
-                                <div className="hidden md:flex flex-col items-end">
-                                    <div className="text-xs font-bold text-white">Level {Math.floor(player.points / 200) + 1}</div>
-                                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Master Class</div>
-                                </div>
-                                <div className="text-right min-w-[100px]">
-                                    <div className="text-lg font-bold text-white flex items-center justify-end gap-2 group-hover:scale-110 transition-transform"><Zap size={16} className="text-indigo-400" /> {player.points}</div>
-                                    <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest mt-1">Total XP</div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="p-8 text-center bg-white/[0.01]">
-                    <button className="px-10 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-[0.15em] transition-all">
+            {/* Remaining List using the new InteractiveLeaderboard style */}
+            <div className="max-w-4xl mx-auto pb-20">
+                <InteractiveLeaderboard
+                    title="Professional Division"
+                    items={others.map((p, i) => ({
+                        name: p.name,
+                        points: `${p.points} XP`,
+                        rank: i + 4
+                    }))}
+                    icon={ArrowUp}
+                    iconColor="#6366f1"
+                />
+
+                <div className="mt-8 text-center">
+                    <button className="px-10 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-[0.15em] transition-all text-slate-400 hover:text-white">
                         Load More Rankings <ChevronRight size={14} className="inline ml-2" />
                     </button>
                 </div>

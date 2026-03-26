@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
     Zap, Mail, Lock, ArrowRight, Shield,
     CheckCircle, Globe, Layout, User, Chrome,
-    Loader2
+    Loader2, Eye, EyeOff
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -14,6 +14,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,7 +47,7 @@ const LoginPage = () => {
         setLoading(true);
         setError('');
         const demoCreds = {
-            admin: { email: 'admin@mitaoe.com', password: 'admin123' },
+            admin: { email: 'sukrut.dusane@gmail.com', password: '202501110114TestPassword123' },
             member: { email: 'member@clubsync.com', password: 'password123' },
             student: { email: 'student@clubsync.com', password: 'password123' }
         };
@@ -72,14 +73,14 @@ const LoginPage = () => {
                 <div className="lg:w-1/2 bg-indigo-600/10 p-16 flex flex-col justify-between border-r border-white/5 relative group">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full"></div>
                     <div>
-                        <div className="flex items-center gap-3 mb-12">
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20">
+                        <Link to="/" className="flex items-center gap-3 mb-12 hover:opacity-80 transition-opacity w-fit group/logo">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover/logo:scale-105 transition-transform">
                                 <Zap size={26} color="white" fill="white" />
                             </div>
                             <span className="text-xl font-bold tracking-tight">
                                 Club<span className="gradient-text">Sync</span>
                             </span>
-                        </div>
+                        </Link>
                         <h2 className="text-5xl font-bold text-white leading-[1.1] tracking-tight mb-8">Initialize <br />Your <span className="gradient-text">Identity.</span></h2>
                         <p className="text-lg font-medium text-slate-400 mb-12 leading-relaxed">Access the elite campus infrastructure and take control of your student journey.</p>
 
@@ -129,13 +130,20 @@ const LoginPage = () => {
                             <div className="relative group">
                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={20} />
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="w-full bg-[#0b1120] border border-white/5 rounded-2xl py-4 pl-14 pr-6 text-white font-bold text-sm outline-none focus:border-indigo-500/30 focus:bg-[#0f172a] transition-all"
+                                    className="w-full bg-[#0b1120] border border-white/5 rounded-2xl py-4 pl-14 pr-12 text-white font-bold text-sm outline-none focus:border-indigo-500/30 focus:bg-[#0f172a] transition-all"
                                     disabled={loading}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-400 transition-colors focus:outline-none"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                             </div>
                         </div>
 

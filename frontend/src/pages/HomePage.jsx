@@ -2,20 +2,71 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
     Zap, ArrowRight, Shield, Calendar, Users, Trophy,
-    CheckCircle, Star, Globe, TrendingUp, Sparkles, Play, Hexagon
+    Star, Sparkles, Play, Layout, TrendingUp, Layers
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import InteractiveLeaderboard from '../components/InteractiveLeaderboard';
 
-const FeatureCard = ({ icon: Icon, title, desc, delay }) => (
-    <div className={`glass-card p-10 group hover:-translate-y-2 transition-all duration-500 border-white/5 hover:border-indigo-500/30 animate-fade-in`} style={{ animationDelay: `${delay}ms` }}>
-        <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-inner">
-            <Icon size={32} className="text-indigo-400 group-hover:text-indigo-300" />
+// --- Sub-components ---
+
+const useCounter = (end, duration = 2000) => {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        let start = 0;
+        const targetValue = parseInt(end.toString().replace(/[^0-9]/g, '')) || 0;
+        if (targetValue === 0) {
+            setCount(end);
+            return;
+        }
+        const increment = targetValue / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= targetValue) {
+                setCount(targetValue);
+                clearInterval(timer);
+            } else {
+                setCount(Math.floor(start));
+            }
+        }, 16);
+        return () => clearInterval(timer);
+    }, [end, duration]);
+    return count;
+};
+
+const FeatureCard = ({ icon: Icon, title, desc, delay, color = "indigo" }) => (
+    <div className={`glass-card p-10 group hover:-translate-y-2 transition-all duration-500 border-white/5 hover:border-${color}-500/30 hover:shadow-[0_20px_40px_rgba(99,102,241,0.1)] animate-fade-in flex flex-col h-full`} style={{ animationDelay: `${delay}ms` }}>
+        <div className={`w-16 h-16 rounded-2xl bg-${color}-500/10 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-${color}-500/20 transition-all shadow-inner border border-white/5`}>
+            <Icon size={32} className={`text-${color}-400 group-hover:text-${color}-300 transition-colors`} />
         </div>
-        <h3 className="text-2xl font-semibold mb-4 text-white tracking-tight">{title}</h3>
-        <p className="text-slate-400 leading-relaxed font-normal">{desc}</p>
+        <h3 className="text-2xl font-bold mb-4 text-white tracking-tight group-hover:text-indigo-400 transition-colors">{title}</h3>
+        <p className="text-slate-400 leading-relaxed font-medium flex-grow">{desc}</p>
     </div>
 );
+
+const StatCard = ({ title, value, subtitle, icon: Icon, delay }) => {
+    const numericValue = parseInt(value.toString().replace(/[^0-9]/g, '')) || 0;
+    const suffix = value.toString().replace(/[0-9]/g, '');
+    const animatedValue = useCounter(numericValue);
+
+    return (
+        <div className="glass-card p-8 border-white/5 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500 animate-fade-in" style={{ animationDelay: `${delay}ms` }}>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 blur-3xl rounded-full -translate-y-12 translate-x-12 group-hover:bg-indigo-500/10 transition-colors"></div>
+            <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:scale-110 transition-transform">
+                        <Icon size={24} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{title}</span>
+                </div>
+                <div className="text-4xl font-black mb-1 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent group-hover:from-indigo-400 group-hover:to-cyan-400 transition-all">
+                    {animatedValue}{suffix}
+                </div>
+                <p className="text-xs text-slate-500 font-medium">{subtitle}</p>
+            </div>
+        </div>
+    );
+};
 
 const HomePage = () => {
     return (
@@ -31,7 +82,7 @@ const HomePage = () => {
             <main className="relative z-10">
                 <section className="relative overflow-hidden border-b border-white/5">
                     {/* Video Background Layer */}
-                    <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 z-0 text-white">
                         <video
                             autoPlay
                             loop
@@ -41,8 +92,7 @@ const HomePage = () => {
                         >
                             <source src="https://cdn.pixabay.com/video/2024/04/22/209019_large.mp4" type="video/mp4" />
                         </video>
-                        {/* Premium Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-[#020617] backdrop-blur-[2px]"></div>
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-[#020617]/95 backdrop-blur-[1px]"></div>
                     </div>
 
                     <div className="relative z-10 pt-40 pb-24 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
@@ -52,10 +102,10 @@ const HomePage = () => {
                             </div>
 
                             <div className="mb-10">
-                                <h1 className="text-5xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter text-white transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(56,189,248,0.9)] hover:scale-105 cursor-default" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                                <h1 className="text-5xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter text-white transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(56,189,241,0.6)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                                     MITAOE ClubSync
                                 </h1>
-                                <p className="gradient-text text-xl md:text-4xl font-bold tracking-tight transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(34,211,238,0.6)] hover:scale-105 cursor-default" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                                <p className="gradient-text text-xl md:text-4xl font-bold tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                                     Campus Club Management System
                                 </p>
                             </div>
@@ -82,8 +132,6 @@ const HomePage = () => {
                             <div className="relative group">
                                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-[32px] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
                                 <div className="glass-card aspect-auto w-full p-8 border-white/10 shadow-2xl overflow-hidden relative">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-transparent pointer-events-none"></div>
-
                                     <div className="relative z-10">
                                         <div className="flex items-center justify-between mb-8">
                                             <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -97,7 +145,6 @@ const HomePage = () => {
                                         </div>
 
                                         <div className="space-y-3">
-                                            {/* Hackathon */}
                                             <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-bold text-white mb-0.5">Hackathon 2026</span>
@@ -105,8 +152,6 @@ const HomePage = () => {
                                                 </div>
                                                 <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 uppercase tracking-tight">Hackathon</span>
                                             </div>
-
-                                            {/* Workshop */}
                                             <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-bold text-white mb-0.5">Robotics Workshop</span>
@@ -114,8 +159,6 @@ const HomePage = () => {
                                                 </div>
                                                 <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 text-[10px] font-bold border border-blue-500/20 uppercase tracking-tight">Workshop</span>
                                             </div>
-
-                                            {/* Meeting */}
                                             <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-bold text-white mb-0.5">Cultural Fest Meeting</span>
@@ -123,8 +166,6 @@ const HomePage = () => {
                                                 </div>
                                                 <span className="px-2 py-0.5 rounded-md bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20 uppercase tracking-tight">Meeting</span>
                                             </div>
-
-                                            {/* Competition */}
                                             <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-bold text-white mb-0.5">AI Bootcamp</span>
@@ -150,77 +191,114 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className="py-20 bg-white/[0.01] border-y border-white/5">
-                    <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-12">
-                        {[
-                            { label: "Partner Clubs", value: "142+", color: "text-indigo-400" },
-                            { label: "Daily Active", value: "8.4k", color: "text-cyan-400" },
-                            { label: "Global Ranking", value: "#1", color: "text-purple-400" },
-                            { label: "Points Earned", value: "1.2M", color: "text-pink-400" }
-                        ].map((s, i) => (
-                            <div key={i} className="text-center">
-                                <div className={`text-5xl font-bold mb-2 tracking-tight ${s.color}`}>{s.value}</div>
-                                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">{s.label}</div>
-                            </div>
-                        ))}
+                {/* College Stats Section */}
+                <section className="py-24 px-6 relative overflow-hidden">
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                        <StatCard title="Total Clubs" value="20+" subtitle="Active clubs in MITAOE" icon={Users} delay={100} />
+                        <StatCard title="Events Conducted" value="100+" subtitle="Events organized till now" icon={Calendar} delay={200} />
+                        <StatCard title="Active Students" value="2000+" subtitle="Participating students" icon={Sparkles} delay={300} />
+                        <StatCard title="Campus Ranking" value="#1" subtitle="Club activity score" icon={Trophy} delay={400} />
                     </div>
+                </section>
+
+                {/* Leaderboards Section */}
+                <section className="py-24 px-6 border-t border-white/5 relative">
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+                        {/* Top Clubs */}
+                        <InteractiveLeaderboard
+                            title="Top Clubs at MITAOE"
+                            items={[
+                                { name: 'Girlscript MITAOE', score: '98 PTS' },
+                                { name: 'Vertex', score: '94 PTS' },
+                                { name: 'E-Cell', score: '89 PTS' },
+                                { name: 'CSI', score: '85 PTS' },
+                                { name: 'Robotics Club', score: '82 PTS' }
+                            ]}
+                            icon={Trophy}
+                            iconColor="#fbbf24"
+                        />
+
+                        {/* Top Participants */}
+                        <InteractiveLeaderboard
+                            title="Top Active Participants"
+                            items={[
+                                { name: 'Aditi Sharma', score: '240 XP' },
+                                { name: 'Rohan Patil', score: '210 XP' },
+                                { name: 'Sneha Kulkarni', score: '195 XP' },
+                                { name: 'Omkar Jadhav', score: '180 XP' },
+                                { name: 'Pratik Deshmukh', score: '165 XP' }
+                            ]}
+                            icon={Star}
+                            iconColor="#22d3ee"
+                        />
+                    </div>
+                </section>
+
+                {/* Explore Clubs CTA Section */}
+                <section id="clubs" className="py-40 px-6 relative overflow-hidden bg-gradient-to-b from-transparent to-indigo-900/5 transition-colors">
+                    <div className="max-w-4xl mx-auto text-center relative z-10 animate-fade-in">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-8 shadow-inner">
+                            Campus Ecosystem
+                        </div>
+                        <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-[1.1]">
+                            Discover Your <span className="gradient-text">Community.</span>
+                        </h2>
+                        <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                            Join over 20+ specialized clubs and associations at MITAOE. Whether you're into tech, arts, or leadership, find your perfect fit today.
+                        </p>
+
+                        <div className="flex justify-center">
+                            <Link to="/clubs">
+                                <button className="btn-primary group text-xl px-14 py-6 shadow-[0_0_50px_rgba(99,102,241,0.3)] hover:shadow-[0_0_80px_rgba(99,102,241,0.5)] transition-all transform hover:scale-105 active:scale-95">
+                                    Explore All Clubs <ArrowRight size={24} className="ml-2 group-hover:translate-x-2 transition-transform" />
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Decorative Elements */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 blur-[160px] rounded-full -z-10"></div>
                 </section>
 
                 {/* Features Section */}
                 <section id="about" className="py-32 px-6">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-24">
-                            <h2 className="text-5xl font-bold mb-6 tracking-tight text-white">EVERYTHING YOU NEED TO <br /><span className="gradient-text">DOMINATE.</span></h2>
-                            <p className="text-slate-400 max-w-2xl mx-auto text-lg font-normal">Built for ambitious clubs and high-performing students who want to stand out.</p>
+                            <h2 className="text-5xl font-bold mb-6 tracking-tight text-white uppercase italic">POWERING CAMPUS <br /><span className="gradient-text">EXCELLENCE.</span></h2>
+                            <p className="text-slate-400 max-w-3xl mx-auto text-lg font-medium leading-relaxed">The unified digital hub for managing, organizing, and tracking club activities across the MITAOE ecosystem.</p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <FeatureCard
-                                icon={Layout}
-                                title="Smart CRM"
-                                desc="Manage members, roles, and registrations with a specialized CRM built for campus life."
+                                icon={Layers}
+                                color="indigo"
+                                title="Club Management"
+                                desc="Create, manage, and monitor all MITAOE clubs in one place. Admins can add clubs, assign roles, track members, and manage activities easily."
                                 delay={100}
                             />
                             <FeatureCard
-                                icon={Zap}
-                                title="Gamified Growth"
-                                desc="Unlock badges, gain XP, and climb the leaderboard as you lead the campus movement."
+                                icon={Calendar}
+                                color="cyan"
+                                title="Event & Registration"
+                                desc="Organize college events, manage registrations, and track participation in real time. Students can join events, and admins can view registration statistics instantly."
                                 delay={200}
                             />
                             <FeatureCard
-                                icon={Shield}
-                                title="Ironclad Security"
-                                desc="Enterprise-grade authentication and role-based access to keep your data protected."
+                                icon={TrendingUp}
+                                color="violet"
+                                title="Leaderboard & Analytics"
+                                desc="Track top clubs, active students, and event participation across MITAOE. View leaderboards, statistics, and performance insights from the dashboard."
                                 delay={300}
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* Dynamic CTA */}
-                <section id="support" className="py-40 px-6">
-                    <div className="max-w-6xl mx-auto glass-card p-20 text-center border-indigo-500/20 overflow-hidden relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full"></div>
-                        <h2 className="text-6xl font-bold mb-8 leading-tight tracking-tight text-white">OWN YOUR <br /><span className="gradient-text">CAMPUS LIFE.</span></h2>
-                        <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-normal">Join 8,000+ students and level up your leadership game today.</p>
-                        <div className="flex justify-center gap-6">
-                            <Link to="/signup">
-                                <button className="btn-primary px-12 py-5 text-lg">Join the Network</button>
-                            </Link>
-                        </div>
-                    </div>
-                </section>
+                {/* Footer is handled outside main */}
             </main>
 
             <Footer />
         </div>
     );
 };
-
-const Layout = ({ size, className }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 9h18" /><path d="M9 21V9" />
-    </svg>
-);
 
 export default HomePage;

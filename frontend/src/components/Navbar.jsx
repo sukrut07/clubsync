@@ -64,7 +64,7 @@ const Navbar = () => {
                                 <div className="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:border-indigo-500/60 transition-colors">
                                     <User size={16} className="text-indigo-400" />
                                 </div>
-                                <span className="text-sm font-medium hidden lg:block text-slate-200">{user.name.split(' ')[0]}</span>
+                                <span className="text-sm font-medium hidden lg:block text-slate-200">{(user.name || user.email || 'User').split(' ')[0]}</span>
                             </Link>
                             <button
                                 onClick={handleLogout}

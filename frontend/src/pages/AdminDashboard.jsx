@@ -36,14 +36,22 @@ const ProgressBar = ({ progress, color = "indigo" }) => (
     </div>
 );
 
-const ControlButton = ({ icon: Icon, label, color = "indigo" }) => (
-    <button className="flex flex-col items-center justify-center p-6 bg-white/[0.02] border border-white/5 rounded-3xl group hover:border-indigo-500/30 transition-all gap-3 hover:bg-white/[0.04]">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner`} style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
-            <Icon size={22} style={{ color }} className="group-hover:scale-110 transition-transform" />
+const ControlButton = ({ icon: Icon, label, color = "indigo", to }) => {
+    const content = (
+        <div className="flex flex-col items-center justify-center p-6 bg-white/[0.02] border border-white/5 rounded-3xl group hover:border-indigo-500/30 transition-all gap-3 hover:bg-white/[0.04] w-full h-full cursor-pointer">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner`} style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
+                <Icon size={22} style={{ color }} className="group-hover:scale-110 transition-transform" />
+            </div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-white transition-colors">{label}</span>
         </div>
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-white transition-colors">{label}</span>
-    </button>
-);
+    );
+
+    if (to) {
+        return <Link to={to} className="block w-full h-full">{content}</Link>;
+    }
+
+    return content;
+};
 
 const AdminDashboard = () => {
     const { user, loading: authLoading, isAdmin, isMember, isStudent } = useAuth();
@@ -295,11 +303,11 @@ const AdminDashboard = () => {
                                 <Settings size={24} className="text-indigo-400" /> Club Control
                             </h3>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                <ControlButton icon={Calendar} label="Add Event" color="#6366f1" />
+                                <ControlButton icon={Calendar} label="Add Event" color="#6366f1" to="/events/create" />
                                 <ControlButton icon={Users} label="Add Member" color="#8b5cf6" />
                                 <ControlButton icon={FileText} label="Assign Task" color="#f59e0b" />
-                                <ControlButton icon={Activity} label="Registrations" color="#06b6d4" />
-                                <ControlButton icon={Shield} label="Participation" color="#10b981" />
+                                <ControlButton icon={Activity} label="Registrations" color="#06b6d4" to="/registrations" />
+                                <ControlButton icon={Shield} label="Participation" color="#10b981" to="/admin/participation" />
                             </div>
                         </div>
                     )}
@@ -361,12 +369,16 @@ const AdminDashboard = () => {
                                 </>
                             ) : (
                                 <>
-                                    <button className="w-full py-4 bg-white text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-[1.02] transition-colors">
-                                        Add Event
-                                    </button>
-                                    <button className="w-full py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest rounded-xl backdrop-blur-md transition-all">
-                                        Add Member
-                                    </button>
+                                    <Link to="/events/create">
+                                        <button className="w-full py-4 bg-white text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-[1.02] transition-colors mb-3">
+                                            Add Event
+                                        </button>
+                                    </Link>
+                                    <Link to="/admin/participation">
+                                        <button className="w-full py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest rounded-xl backdrop-blur-md transition-all">
+                                            Participation
+                                        </button>
+                                    </Link>
                                 </>
                             )}
                         </div>

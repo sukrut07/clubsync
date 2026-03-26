@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Users, Calendar, Megaphone, Trophy, User,
     Settings, LogOut, Menu, X, Bell, Search, Zap, ChevronRight,
-    UserCheck, FileText, Activity, BarChart2
+    FileText, PieChart, Activity, UserCheck
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Footer from './Footer';
@@ -35,14 +35,13 @@ const DashboardLayout = ({ children }) => {
 
     const menuItems = [
         { label: 'Dashboard', icon: LayoutDashboard, path: user?.role === 'admin' ? '/admin' : (user?.role === 'member' ? '/member' : '/events') },
-        { label: 'Clubs', icon: Users, path: '/clubs' },
+        { label: 'Clubs', icon: Users, path: user?.role === 'admin' ? '/admin/clubs' : '/clubs' },
         { label: 'Events', icon: Calendar, path: '/events' },
         // Admin & Member Only Items
         ...((isAdmin || isMember) ? [
-            { label: 'Members', icon: UserCheck, path: '/admin#members' },
-            { label: 'Registrations', icon: FileText, path: '/admin#registrations' },
-            { label: 'Participation', icon: Activity, path: '/admin#participation' },
-            { label: 'Analytics', icon: BarChart2, path: '/analytics' },
+            { label: 'Analytics', icon: PieChart, path: '/analytics' },
+            { label: 'Registrations', icon: FileText, path: '/registrations' },
+            { label: 'Participation', icon: UserCheck, path: '/admin/participation' },
         ] : []),
         { label: 'Announcements', icon: Megaphone, path: '/announcements' },
         { label: 'Profile', icon: User, path: '/profile' },
