@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: "https://clubsync-4qua.vercel.app/",
+    baseURL: "http://localhost:5005/api/auth",
     withCredentials: false,
     headers: {
         'Content-Type': 'application/json',
