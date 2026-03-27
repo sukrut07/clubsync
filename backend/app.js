@@ -7,15 +7,14 @@ dotenv.config();
 const app = express();
 
 // Middleware
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://clubsync-4qua.vercel.app"
-  ],
+  origin: true,
   credentials: true,
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
 }));
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
