@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'member', 'student'],
         default: 'student'
     },
+    branch: {
+        type: String
+    },
+    division: {
+        type: String
+    },
+    prn: {
+        type: String,
+        unique: true
+    },
     club: {
         type: String
     },

@@ -3,6 +3,7 @@ dotenv.config();
 
 const app = require('./app');
 const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 const User = require('./models/User');
 const Test = require('./models/Test');
 const authRoutes = require('./routes/auth');
@@ -14,6 +15,12 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB().then(async () => {
+    // Skip initialization if in Mock Mode
+    if (mongoose.connection.readyState !== 1) {
+        console.warn('⚠️ Skipping Database Initialization: Bypassing Atlas.');
+        return;
+    }
+
     try {
         await Test.create({ name: 'Database Initializer' });
         console.log('✅ Test document inserted to force DB creation');

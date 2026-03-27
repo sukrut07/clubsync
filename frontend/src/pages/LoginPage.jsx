@@ -30,9 +30,9 @@ const LoginPage = () => {
             if (result.success) {
                 // Determine redirect based on role (decoded from token or from user state)
                 const storedUser = JSON.parse(localStorage.getItem('user'));
-                if (storedUser?.role === 'admin') navigate('/admin');
-                else if (storedUser?.role === 'member') navigate('/member');
-                else navigate('/events');
+                if (storedUser?.role === 'admin') navigate('/dashboard/admin');
+                else if (storedUser?.role === 'member') navigate('/dashboard/leader');
+                else navigate('/dashboard/student');
             } else {
                 setError(result.message || 'Authentication failed.');
             }
@@ -54,7 +54,8 @@ const LoginPage = () => {
         const { email: demoEmail, password: demoPassword } = demoCreds[role];
         try {
             await login(demoEmail, demoPassword);
-            navigate(role === 'admin' ? '/admin' : (role === 'member' ? '/member' : '/events'));
+            const path = role === 'admin' ? '/dashboard/admin' : (role === 'member' ? '/dashboard/leader' : '/dashboard/student');
+            navigate(path);
         } catch (err) {
             setError('Demo login failed. Ensure database is seeded.');
         } finally {

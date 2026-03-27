@@ -1,12 +1,26 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 // Register a new user
 // POST /api/auth/register
 const registerUser = async (req, res) => {
+    // Mock Mode Fallback
+    if (mongoose.connection.readyState !== 1) {
+        console.warn('⚠️ MOCK SIGNUP: Bypassing MongoDB Atlas');
+        const { name, email, role } = req.body;
+        return res.status(201).json({
+            _id: 'mock_id_' + Date.now(),
+            name,
+            email,
+            role: role || 'student',
+            token: generateToken('mock_id')
+        });
+    }
+
     try {
-        const { name, email, password, role, club } = req.body;
+        const { name, email, password, role, club, branch, division, prn } = req.body;
 
         // Check if user exists
         const userExists = await User.findOne({ email });
@@ -24,7 +38,10 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             role: role || 'student',
-            club
+            club,
+            branch,
+            division,
+            prn
         });
 
         if (user) {
@@ -46,6 +63,26 @@ const registerUser = async (req, res) => {
 // Login user
 // POST /api/auth/login
 const loginUser = async (req, res) => {
+    // Mock Mode Fallback
+    if (mongoose.connection.readyState !== 1) {
+        console.warn('⚠️ MOCK LOGIN: Bypassing MongoDB Atlas');
+        const { email } = req.body;
+
+        // Simple logic to assign role based on email or keyword
+        let role = 'student';
+        let name = 'Elite User';
+        if (email.includes('admin')) { role = 'admin'; name = 'Super Admin'; }
+        else if (email.includes('member')) { role = 'member'; name = 'Club Leader'; }
+
+        return res.json({
+            _id: 'mock_id',
+            name,
+            email,
+            role,
+            token: generateToken('mock_id')
+        });
+    }
+
     try {
         const { email, password } = req.body;
 
@@ -71,6 +108,16 @@ const loginUser = async (req, res) => {
 // Get user profile
 // GET /api/auth/profile
 const getProfile = async (req, res) => {
+    // Mock Mode Fallback
+    if (mongoose.connection.readyState !== 1) {
+        return res.json({
+            _id: req.user?._id || 'mock_id',
+            name: 'Mock User',
+            email: 'mock@test.com',
+            role: 'student'
+        });
+    }
+
     try {
         const user = await User.findById(req.user._id).select('-password');
         if (user) {

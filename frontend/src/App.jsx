@@ -18,6 +18,7 @@ import Analytics from './pages/Analytics';
 import Registrations from './pages/Registrations';
 import AdminClubs from './pages/AdminClubs';
 import Participation from './pages/Participation';
+import Tasks from './pages/Tasks';
 import DemoPage from './pages/DemoPage';
 import DashboardLayout from './components/DashboardLayout';
 import './index.css';
@@ -37,9 +38,9 @@ const ProtectedRoute = ({ children, roles, useLayout = true }) => {
   }
 
   if (roles && !roles.includes(user.role)) {
-    if (user.role === 'admin') return <Navigate to="/admin" replace />;
-    if (user.role === 'member') return <Navigate to="/member" replace />;
-    return <Navigate to="/events" replace />;
+    if (user.role === 'admin') return <Navigate to="/dashboard/admin" replace />;
+    if (user.role === 'member') return <Navigate to="/dashboard/leader" replace />;
+    return <Navigate to="/dashboard/student" replace />;
   }
 
   return useLayout ? <DashboardLayout>{children}</DashboardLayout> : children;
@@ -48,36 +49,48 @@ const ProtectedRoute = ({ children, roles, useLayout = true }) => {
 function AppRoutes() {
   const { user } = useAuth();
 
+  const getHomeRedirect = (role) => {
+    if (role === 'admin') return <Navigate to="/dashboard/admin" />;
+    if (role === 'member') return <Navigate to="/dashboard/leader" />;
+    return <Navigate to="/dashboard/student" />;
+  };
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={user ? (user.role === 'admin' ? <Navigate to="/admin" /> : (user.role === 'member' ? <Navigate to="/member" /> : <Navigate to="/events" />)) : <LoginPage />} />
-      <Route path="/signup" element={user ? (user.role === 'admin' ? <Navigate to="/admin" /> : (user.role === 'member' ? <Navigate to="/member" /> : <Navigate to="/events" />)) : <SignupPage />} />
+      <Route path="/login" element={user ? getHomeRedirect(user.role) : <LoginPage />} />
+      <Route path="/signup" element={user ? getHomeRedirect(user.role) : <SignupPage />} />
 
       {/* SaaS Dashboards (Wrapped in Sidebar) */}
-      <Route path="/dashboard" element={
+      <Route path="/dashboard/student" element={
         <ProtectedRoute roles={['student']}>
           <Dashboard />
         </ProtectedRoute>
       } />
 
-      <Route path="/member" element={
+      <Route path="/dashboard/leader" element={
         <ProtectedRoute roles={['member']}>
           <MemberDashboard />
         </ProtectedRoute>
       } />
 
-      <Route path="/admin" element={
+      <Route path="/dashboard/admin" element={
         <ProtectedRoute roles={['admin']}>
           <AdminDashboard />
         </ProtectedRoute>
       } />
+
+      {/* Compatibility for old paths */}
+      <Route path="/dashboard" element={<Navigate to="/dashboard/student" replace />} />
+      <Route path="/admin" element={<Navigate to="/dashboard/admin" replace />} />
+      <Route path="/member" element={<Navigate to="/dashboard/leader" replace />} />
 
       {/* Global SaaS Pages */}
       <Route path="/clubs" element={<ClubsPage />} />
       <Route path="/events" element={<ProtectedRoute><EventPage /></ProtectedRoute>} />
       <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
       <Route path="/announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
+      <Route path="/tasks" element={<ProtectedRoute roles={['admin', 'member']}><Tasks /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
       <Route path="/registrations" element={
@@ -98,7 +111,7 @@ function AppRoutes() {
 
       {/* Extra Misc */}
       <Route path="/events/create" element={
-        <ProtectedRoute roles={['admin', 'member']}>
+        <ProtectedRoute roles={['admin']}>
           <CreateEvent />
         </ProtectedRoute>
       } />

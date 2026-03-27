@@ -4,6 +4,7 @@ import {
     Filter, Search, Map as MapIcon, Plus, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { eventsAPI } from '../services/api';
 
 const EventCard = ({ event, delay }) => (
@@ -54,6 +55,7 @@ const EventCard = ({ event, delay }) => (
 );
 
 const EventPage = () => {
+    const { isAdmin } = useAuth();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -88,11 +90,13 @@ const EventPage = () => {
                     <div className="hidden md:flex items-center bg-white/5 border border-white/5 rounded-2xl px-6 py-3 text-slate-500 font-bold text-xs uppercase tracking-widest cursor-pointer hover:border-indigo-500/30 transition-all">
                         <Filter size={16} className="mr-3" /> Filter Ops
                     </div>
-                    <Link to="/events/create">
-                        <button className="btn-primary h-14 px-8">
-                            Launch Event <Plus size={20} />
-                        </button>
-                    </Link>
+                    {isAdmin && (
+                        <Link to="/events/create">
+                            <button className="btn-primary h-14 px-8">
+                                Launch Event <Plus size={20} />
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </div>
 

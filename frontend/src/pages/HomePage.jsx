@@ -97,8 +97,13 @@ const HomePage = () => {
 
                     <div className="relative z-10 pt-40 pb-24 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
                         <div className="flex-1 text-center lg:text-left">
-                            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-bold uppercase tracking-[0.2em] mb-10 shadow-[0_0_30px_rgba(99,102,241,0.2)]">
-                                <Sparkles size={16} fill="currentColor" /> The Next-Gen Campus OS
+                            <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-10">
+                                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(99,102,241,0.2)]">
+                                    <Sparkles size={16} fill="currentColor" /> The Next-Gen Campus OS
+                                </div>
+                                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(34,211,238,0.2)] animate-pulse">
+                                    #clubmela2k26
+                                </div>
                             </div>
 
                             <div className="mb-10">

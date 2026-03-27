@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // POST /api/events/create
-router.post('/create', async (req, res) => {
+router.post('/create', protect, adminOnly, async (req, res) => {
     try {
         const { title, description, club, date, time, venue, createdBy } = req.body;
         const newEvent = new Event({

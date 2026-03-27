@@ -4,7 +4,7 @@ import { Zap, Mail, Phone, MapPin, ExternalLink, Github, Twitter, Linkedin } fro
 
 const Footer = () => {
     return (
-        <footer className="relative mt-20 border-t border-white/5 bg-[#0b1120]/80 backdrop-blur-xl pt-16 pb-8 overflow-hidden">
+        <footer id="footer" className="relative mt-20 border-t border-white/5 bg-[#0b1120]/80 backdrop-blur-xl pt-16 pb-8 overflow-hidden">
             {/* Background Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
             <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none"></div>

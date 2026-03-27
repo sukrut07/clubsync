@@ -42,6 +42,7 @@ const DashboardLayout = ({ children }) => {
             { label: 'Analytics', icon: PieChart, path: '/analytics' },
             { label: 'Registrations', icon: FileText, path: '/registrations' },
             { label: 'Participation', icon: UserCheck, path: '/admin/participation' },
+            { label: 'Tasks', icon: FileText, path: '/tasks' },
         ] : []),
         { label: 'Announcements', icon: Megaphone, path: '/announcements' },
         { label: 'Profile', icon: User, path: '/profile' },

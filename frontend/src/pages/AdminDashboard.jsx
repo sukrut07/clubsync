@@ -97,6 +97,9 @@ const AdminDashboard = () => {
         { id: 1, name: "Web Dev Workshop", date: "25 Mar", club: "GDG MITAOE", status: "Open" },
         { id: 2, name: "Design Sprint", date: "28 Mar", club: "Aalekh", status: "Full" },
         { id: 3, name: "AI Hackathon", date: "05 Apr", club: "Niyudrath", status: "Open" },
+        { id: 4, name: "Networking Night", date: "10 Apr", club: "ClubSync", status: "Open" },
+        { id: 5, name: "Cloud Computing 101", date: "12 Apr", club: "GDG MITAOE", status: "Open" },
+        { id: 6, name: "Art Exhibition", date: "15 Apr", club: "Aalekh", status: "Full" },
     ];
 
     const studentHistory = [
@@ -230,7 +233,7 @@ const AdminDashboard = () => {
                             <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-3 font-bold uppercase tracking-tight">
                                 <Calendar size={24} className="text-cyan-400" /> {isStudent ? 'Discover Events' : 'Upcoming Events'}
                             </h3>
-                            {(isAdmin || isMember) && (
+                            {isAdmin && (
                                 <Link to="/events/create" className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all">
                                     Launch Event
                                 </Link>
@@ -303,7 +306,7 @@ const AdminDashboard = () => {
                                 <Settings size={24} className="text-indigo-400" /> Club Control
                             </h3>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                <ControlButton icon={Calendar} label="Add Event" color="#6366f1" to="/events/create" />
+                                {isAdmin && <ControlButton icon={Calendar} label="Add Event" color="#6366f1" to="/events/create" />}
                                 <ControlButton icon={Users} label="Add Member" color="#8b5cf6" />
                                 <ControlButton icon={FileText} label="Assign Task" color="#f59e0b" />
                                 <ControlButton icon={Activity} label="Registrations" color="#06b6d4" to="/registrations" />
@@ -369,11 +372,13 @@ const AdminDashboard = () => {
                                 </>
                             ) : (
                                 <>
-                                    <Link to="/events/create">
-                                        <button className="w-full py-4 bg-white text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-[1.02] transition-colors mb-3">
-                                            Add Event
-                                        </button>
-                                    </Link>
+                                    {isAdmin && (
+                                        <Link to="/events/create">
+                                            <button className="w-full py-4 bg-white text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:scale-[1.02] transition-colors mb-3">
+                                                Add Event
+                                            </button>
+                                        </Link>
+                                    )}
                                     <Link to="/admin/participation">
                                         <button className="w-full py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest rounded-xl backdrop-blur-md transition-all">
                                             Participation

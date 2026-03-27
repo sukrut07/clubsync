@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, User, LogOut, LayoutDashboard, Shield, Users, Calendar, Megaphone } from 'lucide-react';
+import { Zap, User, LogOut, LayoutDashboard, Shield, Users, Calendar, Megaphone, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import Badge from './Badge';
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -47,7 +48,17 @@ const Navbar = () => {
                     <a href="#footer" className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-white transition-all">Contact</a>
                     <Link to="/clubs" className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-white transition-all">Clubs</Link>
                     <Link to="/events" className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-white transition-all">Events</Link>
-                    <a href="#about" className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-white transition-all">About</a>
+                    <a
+                        href="https://drive.google.com/drive/folders/17YwV_r7yD5tA-e8p9uYnNf9V8m3g9X8Z"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center"
+                    >
+                        <Badge variant="cyan" className="cursor-pointer hover:bg-cyan-500/20 hover:scale-105 transition-all py-1 px-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                            <Sparkles size={10} className="mr-1" /> clubmela2k26
+                        </Badge>
+                    </a>
+                    <a href="#footer" className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-white transition-all">About</a>
                     <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-600 cursor-default">MITAOE</span>
                     {user && (
                         <Link to={isAdmin ? "/admin" : (isMember ? "/member" : "/events")} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-400 hover:text-indigo-300 transition-all ml-4">
