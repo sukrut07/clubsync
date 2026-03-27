@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:5005/api',
+    baseURL: "https://clubsync-8js9.onrender.com/api",
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
